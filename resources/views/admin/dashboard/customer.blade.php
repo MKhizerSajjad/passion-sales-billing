@@ -1,0 +1,1 @@
+<h4>Welcom {{Auth::user()->first_name}} {{Auth::user()->last_name}}!</h4>
