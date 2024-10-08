@@ -58,7 +58,7 @@ class BillController extends Controller
                             }
                         }
                         $row['commission'] = 0;
-                        if(isset($row['consumption'])){
+                        if(isset($row['consumption']) && $row['status'] == 'Contrat effectif'){
                             // Commmission calculation
                             switch ($row['b2c_b2b']) {
                                 case 'Residentiel':

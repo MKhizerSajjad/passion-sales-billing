@@ -10,7 +10,7 @@
                             <thead>
                                 <tr>
                                     <th width="10%">Bill ID</th>
-                                    <th width="20%">Date</th>
+                                    <th width="20%">Status</th>
                                     <th width="10%">Userfield Agent</th>
                                     <th width="10%" >Payment</th>
                                     <th width="5%">B2C/B2B</th>
@@ -25,7 +25,8 @@
                                 @foreach ($bills as $bill)
                                     <tr>
                                         <td>{{ $bill->bill_id }}</td>
-                                        <td>{{ date('F j, Y, g:i A', strtotime($bill->inscription_date)) }} </td>
+                                        <!-- <td>{{ date('F j, Y, g:i A', strtotime($bill->inscription_date)) }} </td> -->
+                                        <td>{{ $bill->status }}</td>
                                         <td>{{ $bill->userfield_agent }}</td>
                                         <td>{{ $bill->payment_type }}</td>
                                         <td>{{ $bill->b2c_b2b }}</td>
