@@ -22,7 +22,7 @@ class BillController extends Controller
             $request->validate([
                 'file' => 'required|file|mimes:xlsx,xls',
             ]);
-            
+
             $file = $request->file('file');
             $data = Excel::toArray(new BillsImport, $file);
             $header = $records = [];
@@ -38,7 +38,7 @@ class BillController extends Controller
                 'consumption' => 'consumption',
                 'contract_type' => 'contract_type',
                 'product_type' => 'Product type',
-                
+
             ];
             if(isset($data[0]) && isset($data[0][1])){
                 unset($data[0][0]);
@@ -73,7 +73,7 @@ class BillController extends Controller
                                 $row['commission'] += 5;
                             }
                             // Bill type calculation
-                            if($row['bill'] == 'E-billing'){
+                            if($row['bill'] == 'E-mail'){
                                 $row['commission'] += 5;
                             }
                         }
