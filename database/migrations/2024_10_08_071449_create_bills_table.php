@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('b2c_b2b', 20);
             $table->timestamp('inscription_date')->default(now());
             $table->decimal('consumption', 10, 2);
+            $table->integer('commission')->default(0);
             $table->timestamps();
         });
     }

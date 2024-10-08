@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $b2c_b2b
  * @property Carbon $inscription_date
  * @property float $consumption
+ * @property int $commission
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -34,7 +35,8 @@ class Bill extends Model
 	protected $casts = [
 		'bill_id' => 'int',
 		'inscription_date' => 'datetime',
-		'consumption' => 'float'
+		'consumption' => 'float',
+		'commission' => 'int'
 	];
 
 	protected $fillable = [
@@ -46,6 +48,7 @@ class Bill extends Model
 		'bill',
 		'b2c_b2b',
 		'inscription_date',
-		'consumption'
+		'consumption',
+		'commission'
 	];
 }

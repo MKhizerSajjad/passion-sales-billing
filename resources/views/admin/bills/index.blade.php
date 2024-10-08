@@ -13,10 +13,9 @@
                                     <th width="15%">Date</th>
                                     <th width="10%">Userfield Agent</th>
                                     <th width="15%" >Payment Type</th>
-                                    <th width="5%">B2C/B2B</th>
+                                    <th width="10%">B2C/B2B</th>
                                     <th width="10%">Consumption</th>
-                                    <th width="15%">Created At</th>
-                                    <th width="15%">Updated At</th>
+                                    <th width="5%">Commission</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -28,8 +27,7 @@
                                         <td>{{ $bill->payment_type }}</td>
                                         <td>{{ $bill->b2c_b2b }}</td>
                                         <td>{{ $bill->consumption }}</td>
-                                        <td>{{ date('F j, Y, g:i A', strtotime($bill->created_at)) }} </td>
-                                        <td>{{ date('F j, Y, g:i A', strtotime($bill->updated_at)) }} </td>
+                                        <td>{{ $bill->commission }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

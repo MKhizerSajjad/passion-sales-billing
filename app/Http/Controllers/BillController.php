@@ -55,26 +55,27 @@ class BillController extends Controller
                                 }
                             }
                         }
+                        $row['commission'] = 0;
                         if(isset($row['consumption'])){
                             // Commmission calculation
                             switch ($row['b2c_b2b']) {
                                 case 'Residentiel':
-                                    $row['consumption'] +=  55;
+                                    $row['commission'] +=  55;
                                     break;
                                 case 'Commercial':
-                                    $row['consumption'] +=  85;
+                                    $row['commission'] +=  85;
                                     break;
                             }
                             // Payment type calculation
                             if($row['payment_type'] == 'Domiciliation'){
-                                $row['consumption'] += 5;
+                                $row['commission'] += 5;
                             }
                             // Bill type calculation
-                            if($row['bill'] == 'E-biilling'){
-                                $row['consumption'] += 5;
+                            if($row['bill'] == 'E-billing'){
+                                $row['commission'] += 5;
                             }
                         }
-                        if(count($row) > 0){
+                        if(count($row) > 0 && isset($row['bill_id'])){
                             // Setting update bill records
                             $billObj = DB::table('bills')->where('bill_id', $row['bill_id'])->first();
                             $row['updated_at'] = Carbon::now();
