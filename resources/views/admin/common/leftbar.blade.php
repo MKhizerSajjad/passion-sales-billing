@@ -19,6 +19,11 @@
                         <i class="fa fa-chart-pie"></i><span>Dashboard</span>
                     </a>
                 </li>
+                <li class="{{ request()->routeIs(['billsListing']) ? 'active' : '' }}">
+                    <a href="{{route('billsListing')}}">
+                        <i class="fas fa-list"></i><span>Bills Listing</span>
+                    </a>
+                </li>
                 <li class="{{ request()->routeIs(['importBills']) ? 'active' : '' }}">
                     <a href="{{route('importBills')}}">
                         <i class="fas fa-money-check-alt"></i><span>Import Bills</span>

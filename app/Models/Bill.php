@@ -13,13 +13,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class Bill
  * 
  * @property int $id
+ * @property int $bill_id
  * @property string $userfield_agent
  * @property string $agent
  * @property string $status
  * @property string $payment_type
  * @property string $bill
- * @property string $b2c_b2c
+ * @property string $b2c_b2b
  * @property Carbon $inscription_date
+ * @property float $consumption
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -30,16 +32,20 @@ class Bill extends Model
 	protected $table = 'bills';
 
 	protected $casts = [
-		'inscription_date' => 'datetime'
+		'bill_id' => 'int',
+		'inscription_date' => 'datetime',
+		'consumption' => 'float'
 	];
 
 	protected $fillable = [
+		'bill_id',
 		'userfield_agent',
 		'agent',
 		'status',
 		'payment_type',
 		'bill',
-		'b2c_b2c',
-		'inscription_date'
+		'b2c_b2b',
+		'inscription_date',
+		'consumption'
 	];
 }

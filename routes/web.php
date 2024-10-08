@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
 
     // Bills Routes
     Route::group(['prefix' => 'bills'], function() {
+        Route::get('/', [BillController::class, 'index'])->name('billsListing');
         Route::get('/import', [BillController::class, 'import'])->name('importBills');
         Route::post('/import', [BillController::class, 'import'])->name('importBillsSaved');
     });

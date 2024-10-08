@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('bill_id')->unsigned();
             $table->string('userfield_agent');
             $table->string('agent');
             $table->string('status');
             $table->string('payment_type');
             $table->string('bill', 30);
-            $table->string('b2c_b2c', 20);
+            $table->string('b2c_b2b', 20);
             $table->timestamp('inscription_date')->default(now());
+            $table->decimal('consumption', 10, 2);
             $table->timestamps();
         });
     }
