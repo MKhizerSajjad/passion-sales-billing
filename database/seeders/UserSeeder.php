@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
                 'user_type'      => 1,
                 'first_name'   => 'Super',
                 'last_name'    => 'Admin',
-                'email'        => 'mkhizersajjad@gmail.com',
+                'email'        => 'admin@gmail.com',
                 'password'     => bcrypt('12345678'),
             ];
             User::create($data);
