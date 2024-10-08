@@ -10,12 +10,14 @@
                             <thead>
                                 <tr>
                                     <th width="10%">Bill ID</th>
-                                    <th width="15%">Date</th>
+                                    <th width="20%">Date</th>
                                     <th width="10%">Userfield Agent</th>
-                                    <th width="15%" >Payment Type</th>
-                                    <th width="10%">B2C/B2B</th>
+                                    <th width="10%" >Payment Type</th>
+                                    <th width="5%">B2C/B2B</th>
                                     <th width="10%">Consumption</th>
                                     <th width="5%">Commission</th>
+                                    <th width="10%">Contract Type</th>
+                                    <th width="20%">Product type</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -28,6 +30,8 @@
                                         <td>{{ $bill->b2c_b2b }}</td>
                                         <td>{{ $bill->consumption }}</td>
                                         <td>{{ $bill->commission }}</td>
+                                        <td>{{ $bill->contract_type }}</td>
+                                        <td>{{ $bill->product_type }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

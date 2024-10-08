@@ -36,6 +36,8 @@ class BillController extends Controller
                 'b2c_b2b' => 'B2c/B2B',
                 'inscription_date' => 'Inscription Date',
                 'consumption' => 'consumption',
+                'contract_type' => 'contract_type',
+                'product_type' => 'Product type',
                 
             ];
             if(isset($data[0]) && isset($data[0][1])){

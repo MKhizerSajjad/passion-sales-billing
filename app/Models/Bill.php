@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $agent
  * @property string $status
  * @property string $payment_type
+ * @property string $contract_type
+ * @property string $product_type
  * @property string $bill
  * @property string $b2c_b2b
  * @property Carbon $inscription_date
@@ -45,6 +47,8 @@ class Bill extends Model
 		'agent',
 		'status',
 		'payment_type',
+		'contract_type',
+		'product_type',
 		'bill',
 		'b2c_b2b',
 		'inscription_date',

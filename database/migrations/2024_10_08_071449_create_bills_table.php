@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('agent');
             $table->string('status');
             $table->string('payment_type');
+            $table->string('contract_type');
+            $table->string('product_type');
             $table->string('bill', 30);
             $table->string('b2c_b2b', 20);
             $table->timestamp('inscription_date')->default(now());
