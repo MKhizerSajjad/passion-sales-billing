@@ -14,9 +14,17 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         
-        $dateFilter = (filled($request->days)) ? $request->days : 30;
+        $dateFilter = (filled($request->days) && !empty($request->days)) ? $request->days : 30;
         $dateRange = Carbon::now()->subDays($dateFilter);
-        $statusList = Bill::whereDate( 'inscription_date', '>=', $dateRange)->get()->groupBy('status');
+        $client = (filled($request->agent) && !empty($request->agent)) ? $request->agent : '';
+
+        $statusList = Bill::
+                      whereDate( 'inscription_date', '>=', $dateRange);
+        if($client != '') {
+            $statusList = $statusList->where('userfield_agent', $client);
+        }
+        $statusList = $statusList->get()->groupBy('status');
+
         $statusCount = ['Contrat effectif' => 0, 'Contrat non effectif' => 0];
         $payment = ['effectif' => 0, 'non effectif' => 0];
         foreach ($statusList as $key => $value) {
@@ -33,7 +41,12 @@ class DashboardController extends Controller
         }
         
         $statusChart = $billChart = [];
-        $chartInfo = Bill::whereDate( 'inscription_date', '>=', $dateRange)->orderBy('inscription_date')->get();
+        $chartInfo = Bill::
+                     whereDate( 'inscription_date', '>=', $dateRange);
+        if($client != '') {
+            $chartInfo = $chartInfo->where('userfield_agent', $client);
+        }            
+        $chartInfo = $chartInfo->orderBy('inscription_date')->get();
         foreach ($chartInfo as $bill) {
             $index = date('d M', strtotime($bill->inscription_date));
             if(!in_array($index, array_keys($statusChart))) {
@@ -58,7 +71,9 @@ class DashboardController extends Controller
 
         $chart['paidBills'] = array_column($billChart, 'paid');
         $chart['unpaidBills'] = array_column($billChart, 'unpaid');
-        return view('admin.dashboard', compact('statusCount', 'payment', 'chart'));
+
+        $agentList = Bill::select('userfield_agent')->distinct()->get()->pluck('userfield_agent')->toArray();
+        return view('admin.dashboard', compact('statusCount', 'payment', 'chart', 'agentList'));
 
         if(Auth::user()->user_type != 3) {
 

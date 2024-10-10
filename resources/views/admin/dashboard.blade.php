@@ -18,11 +18,47 @@
     <div class="wrapper">
         <div class="content-page rtl-page">
             <div class="container-fluid">
-                @if (Auth::user()->user_type != 3 && 2 == 1)
-                    @include('admin.dashboard.comapny')
-                @else
-                    @include('admin.dashboard.customer')
-                @endif
+                <div class="row">
+                    <div class="col-6">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                @if (Auth::user()->user_type != 3 && 2 == 1)
+                                    @include('admin.dashboard.comapny')
+                                @else
+                                    @include('admin.dashboard.customer')
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="page-title">Filters</h4>
+                        <div class="row">
+                            <div class="form-group col-5">
+                                <label for="days">Days</label>
+                                <select class="form-control" name="days" id="days" onchange="validation()">
+                                    <option value="">Select Days</option>
+                                    <option value="7" {{request('days') == 7 ? 'selected' : ''}}>Last Week Days</option>
+                                    <option value="15" {{request('days') == 15 ? 'selected' : ''}}>Last 15 Days</option>
+                                    <option value="30" {{request('days') == 30 ? 'selected' : ''}}>Last Month Days</option>
+                                    <option value="60" {{request('days') == 60 ? 'selected' : ''}}>Last 2 Month Days</option>
+                                    <option value="90" {{request('days') == 90 ? 'selected' : ''}}>Last 3 Month Days</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-5">
+                                <label for="status">Agent</label>
+                                <select class="form-control" name="agent" id="agent" onchange="validation()">
+                                    <option value="">Select Status</option>
+                                    @foreach ($agentList as $agent)
+                                        <option value="{{$agent}}" {{request('agent') == $agent ? 'selected' : ''}}>{{$agent}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-2 align-content-end">
+                                <button type="button" class="btn btn-primary reset-form">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
             </div>
             <div class="container-fluid pt-4">
                 <div class="col-12">
@@ -35,7 +71,7 @@
                                             <i class="fas fa-wallet fa-3x"></i>
                                         </div>
                                         <div class="text-white col-6">
-                                            Paid Bills
+                                            Clients effectifs
                                         </div>
                                         <div class="text-white col-6 text-right">
                                             {{$statusCount['Contrat effectif']}}
@@ -52,7 +88,7 @@
                                             <i class="fas fa-file-invoice fa-3x"></i>
                                         </div>
                                         <div class="text-white col-6">
-                                            Pending Bills
+                                            Clients en ettente
                                         </div>
                                         <div class="text-white col-6 text-right">
                                             {{$statusCount['Contrat non effectif']}}
@@ -69,7 +105,7 @@
                                             <i class="fas fa-money-check fa-3x"></i>
                                         </div>
                                         <div class="text-white col-6">
-                                            Paid Commission
+                                            Commissions
                                         </div>
                                         <div class="text-white col-6 text-right">
                                             {{$payment['effectif']}}
@@ -86,7 +122,7 @@
                                             <i class="fas fa-money-check-alt fa-3x"></i>
                                         </div>
                                         <div class="text-white col-8">
-                                            Pending Commission
+                                            Commissions en attente
                                         </div>
                                         <div class="text-white col-4 text-right">
                                             {{$payment['non effectif']}}
@@ -101,12 +137,12 @@
             <div class="col-12">
                 <div class="row">
                     <div  class="col-sm-6 text-center border">
-                        <label class="label label-success">Commissions Chart</label>
-                        <canvas id="chart1"></canvas>
+                        <label class="label label-success">Commissions</label>
+                        <canvas id="commissions-chart"></canvas>
                     </div>
                     <div class="col-sm-6 text-center">
-                        <label class="label label-success">Bills Chart</label>
-                        <canvas id="chart2"></canvas>
+                        <label class="label label-success">Bills</label>
+                        <canvas id="bills-chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -124,20 +160,20 @@
             var paidBills = <?php echo json_encode($chart['paidBills']); ?>;
             var unpaidBills = <?php echo json_encode($chart['unpaidBills']); ?>;
 
-            var chart1 = document.getElementById('chart1')
-            new Chart(chart1, {
+            var commissions_chart = document.getElementById('commissions-chart')
+            new Chart(commissions_chart, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Paid Commission',
+                            label: 'Commissions',
                             data: paid,
                             borderColor: "rgb(89, 121, 191)",
                             backgroundColor: "rgb(89, 121, 191, 1)",
                             order: 0
                         },{
-                            label: 'UnPaid Commission',
+                            label: 'Commissions en attente',
                             data: unpaid,
                             borderColor: "rgb(40, 167, 69)",
                             backgroundColor:"rgba(102, 255, 130, 1)",
@@ -147,35 +183,23 @@
                 },
                 options: {
                     legend: {display: true,position:"bottom"},
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero:true
-                            }
-                        }]
-                    },
-                    title: {
-                        display: true,
-                        text: 'Article Stats Past 10 Days',
-                        position:"bottom"
-                    }
                 }
             });
 
-            var chart2 = document.getElementById('chart2')
-            new Chart(chart2, {
+            var bills_chart = document.getElementById('bills-chart')
+            new Chart(bills_chart, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Paid Bills',
+                            label: 'Clients effectifs',
                             data: paidBills,
                             borderColor: "rgb(89, 121, 191)",
                             backgroundColor: "rgb(89, 121, 191, 1)",
                             order: 0
                         },{
-                            label: 'UnPaid Bills',
+                            label: 'Clients en attente',
                             data: unpaidBills,
                             borderColor: "rgb(40, 167, 69)",
                             backgroundColor:"rgba(102, 255, 130, 1)",
@@ -185,21 +209,27 @@
                 },
                 options: {
                     legend: {display: true,position:"bottom"},
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero:true
-                            }
-                        }]
-                    },
-                    title: {
-                        display: true,
-                        text: 'Article Stats Past 10 Days',
-                        position:"bottom"
-                    }
                 }
             });
         })
+
+        $(document).on('click', '.reset-form', function(event){
+            window.location.href = '/'
+        })
+
+        function validation() {
+            var days = document.getElementById('days').value;
+            var agent = document.getElementById('agent').value;
+            _params = '?';
+            if(days != '') {
+                _params += 'days='+days+'&';
+            }
+            if(agent != '') {
+                _params += 'agent='+agent;
+            }
+            _params = _params.replace(/^&+|&+$/g, '');
+            window.location.href = _params
+        }
     </script>
     @endpush
 </x-app-layout>
