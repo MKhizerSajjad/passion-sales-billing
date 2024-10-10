@@ -47,7 +47,7 @@
                             <div class="form-group col-5">
                                 <label for="status">Agent</label>
                                 <select class="form-control" name="agent" id="agent" onchange="validation()">
-                                    <option value="">Select Status</option>
+                                    <option value="">Select Agent</option>
                                     @foreach ($agentList as $agent)
                                         <option value="{{$agent}}" {{request('agent') == $agent ? 'selected' : ''}}>{{$agent}}</option>
                                     @endforeach
