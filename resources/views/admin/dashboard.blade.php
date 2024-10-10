@@ -81,11 +81,11 @@
                         <div class="col-3">
                             <div class="row">
                                 <div class="col-11 card bg-secondary w-25 p-3 mx-2">
-                                <div class="row">
-                                    <div class="text-white col-12">
-                                        <i class="fas fa-money-check-alt fa-3x"></i>
-                                    </div>
-                                    <div class="text-white col-8">
+                                    <div class="row">
+                                        <div class="text-white col-12">
+                                            <i class="fas fa-money-check-alt fa-3x"></i>
+                                        </div>
+                                        <div class="text-white col-8">
                                             Pending Commission
                                         </div>
                                         <div class="text-white col-4 text-right">
@@ -161,7 +161,7 @@
                     }
                 }
             });
-            
+
             var chart2 = document.getElementById('chart2')
             new Chart(chart2, {
                 type: 'bar',
