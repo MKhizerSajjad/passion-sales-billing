@@ -31,7 +31,7 @@
                                         <td>{{ $bill->payment_type }}</td>
                                         <td>{{ $bill->b2c_b2b }}</td>
                                         <td>{{ $bill->consumption }}</td>
-                                        <td>{{ $bill->commission }}</td>
+                                        <td>{{ ($bill->status == 'Contrat effectif')?$bill->commission:0 }}</td>
                                         <td>{{ $bill->contract_type }}</td>
                                         <td>{{ $bill->product_type }}</td>
                                         <td>{{ $bill->bill }}</td>

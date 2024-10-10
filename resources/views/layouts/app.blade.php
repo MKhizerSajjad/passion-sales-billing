@@ -107,5 +107,6 @@
                 $(".auto-colse-10").slideUp(500);
             }, 10000); // after 10secs
         </script>
+        @stack('script')
     </body>
 </html>

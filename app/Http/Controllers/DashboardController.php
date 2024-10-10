@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bill;
 use App\Models\Cases;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +13,52 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        return view('admin.dashboard');
+        
+        $dateFilter = (filled($request->days)) ? $request->days : 30;
+        $dateRange = Carbon::now()->subDays($dateFilter);
+        $statusList = Bill::whereDate( 'inscription_date', '>=', $dateRange)->get()->groupBy('status');
+        $statusCount = ['Contrat effectif' => 0, 'Contrat non effectif' => 0];
+        $payment = ['effectif' => 0, 'non effectif' => 0];
+        foreach ($statusList as $key => $value) {
+            switch ($key) {
+                case 'Contrat effectif':
+                    $statusCount['Contrat effectif'] = count($value);
+                    $payment['effectif'] += $value->sum('commission');
+                    break;
+                default:
+                    $statusCount['Contrat non effectif'] += count($value);
+                    $payment['non effectif'] += $value->sum('commission');
+                    break;
+            }
+        }
+        
+        $statusChart = $billChart = [];
+        $chartInfo = Bill::whereDate( 'inscription_date', '>=', $dateRange)->orderBy('inscription_date')->get();
+        foreach ($chartInfo as $bill) {
+            $index = date('d M', strtotime($bill->inscription_date));
+            if(!in_array($index, array_keys($statusChart))) {
+                $statusChart[$index] = ['label' => $index, 'effectif' => 0, 'non effectif' => 0];
+                $billChart[$index] = ['label' => $index, 'paid' => 0, 'unpaid' => 0];
+            }
+            switch ($bill->status) {
+                case 'Contrat effectif':
+                    $statusChart[$index]['effectif'] += $bill->commission;
+                    $billChart[$index]['paid'] += 1;
+                    break;
+                default:
+                    $statusChart[$index]['non effectif'] += $bill->commission;
+                    $billChart[$index]['unpaid'] += 1;
+                    break;
+            }
+        }
+        
+        $chart['labels'] = array_column($statusChart, 'label');
+        $chart['paid'] = array_column($statusChart, 'effectif');
+        $chart['unpaid'] = array_column($statusChart, 'non effectif');
+
+        $chart['paidBills'] = array_column($billChart, 'paid');
+        $chart['unpaidBills'] = array_column($billChart, 'unpaid');
+        return view('admin.dashboard', compact('statusCount', 'payment', 'chart'));
 
         if(Auth::user()->user_type != 3) {
 
