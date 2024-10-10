@@ -58,7 +58,7 @@
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
             <div class="container-fluid pt-4">
                 <div class="col-12">
@@ -70,10 +70,10 @@
                                         <div class="text-white col-12">
                                             <i class="fas fa-wallet fa-3x"></i>
                                         </div>
-                                        <div class="text-white col-6">
+                                        <div class="text-white col-8">
                                             Clients effectifs
                                         </div>
-                                        <div class="text-white col-6 text-right">
+                                        <div class="text-white col-4 text-right">
                                             {{$statusCount['Contrat effectif']}}
                                         </div>
                                     </div>
@@ -87,10 +87,10 @@
                                         <div class="text-white col-12">
                                             <i class="fas fa-file-invoice fa-3x"></i>
                                         </div>
-                                        <div class="text-white col-6">
-                                            Clients en ettente
+                                        <div class="text-white col-8">
+                                            Clients en attente
                                         </div>
-                                        <div class="text-white col-6 text-right">
+                                        <div class="text-white col-4 text-right">
                                             {{$statusCount['Contrat non effectif']}}
                                         </div>
                                     </div>
@@ -104,10 +104,10 @@
                                         <div class="text-white col-12">
                                             <i class="fas fa-money-check fa-3x"></i>
                                         </div>
-                                        <div class="text-white col-6">
+                                        <div class="text-white col-8">
                                             Commissions
                                         </div>
-                                        <div class="text-white col-6 text-right">
+                                        <div class="text-white col-4 text-right">
                                             {{$payment['effectif']}}
                                         </div>
                                     </div>
@@ -122,7 +122,7 @@
                                             <i class="fas fa-money-check-alt fa-3x"></i>
                                         </div>
                                         <div class="text-white col-8">
-                                            Commissions en attente
+                                            Comm. en attente
                                         </div>
                                         <div class="text-white col-4 text-right">
                                             {{$payment['non effectif']}}
