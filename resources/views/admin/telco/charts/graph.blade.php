@@ -90,7 +90,7 @@
                                 <i class="fas fa-money-check-alt fa-3x"></i>
                             </div>
                             <div class="text-white col-8">
-                                Commissions en attente
+                                Comm. en attente
                             </div>
                             <div class="text-white col-4 text-right">
                                 {{$payment['Other']}}
