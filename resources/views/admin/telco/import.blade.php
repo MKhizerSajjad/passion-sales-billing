@@ -3,8 +3,8 @@
         <div class="content-page rtl-page">
             <div class="container-fluid">
                 @include('admin.helper.alert_success')
-                <h3>Import Bills</h3>
-                <form action="{{ route('importBills') }}" method="post" enctype="multipart/form-data">
+                <h3>Telco Import Bills</h3>
+                <form action="{{ route('importTelcoBillsSaved') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="file">Choose File</label>
@@ -12,7 +12,7 @@
                         <p class="text-danger">{{ $errors->first('file') }}</p>
                     </div>
                     <div class="form-group  text-right">
-                        <a href="{{ route('billsListing') }}" class="btn btn-danger">Cancel</a>
+                        <a href="{{ route('telcoListing') }}" class="btn btn-danger">Cancel</a>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>

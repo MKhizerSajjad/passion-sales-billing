@@ -10,11 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
-class BillController extends Controller
+class TelcoController extends Controller
 {
     public function index(Request $request){
-        $bills = DB::table('bills')->get();
-        return view('admin.bills.index', compact('bills'));
+        $telco = DB::table('telco')->get();
+        return view('admin.telco.index', compact('telco'));
     }
 
     public function reports(Request $request){
@@ -78,7 +78,7 @@ class BillController extends Controller
 
         $agentList = Bill::select('userfield_agent')->distinct()->get()->pluck('userfield_agent')->toArray();
 
-        return view('admin.bills.reports', compact('statusCount', 'payment', 'chart', 'agentList'));
+        return view('admin.telco.reports', compact('statusCount', 'payment', 'chart', 'agentList'));
     }
     public function import(Request $request)
     {
@@ -92,18 +92,16 @@ class BillController extends Controller
             $data = Excel::toArray(new BillsImport, $file);
             $header = $records = [];
             $mapping = [
-                'bill_id' => 'ID contract',
-                'userfield_agent' => 'Userfield_Agent',
-                'agent' => 'Agent Name',
-                'status' => 'Status',
-                'payment_type' => 'Payment type',
-                'bill' => 'Bill type',
-                'b2c_b2b' => 'B2c/B2B',
-                'inscription_date' => 'Inscription Date',
-                'consumption' => 'consumption',
-                'contract_type' => 'contract_type',
-                'product_type' => 'Product type',
-
+                'contract_id' => 'contract_id',
+                'payment_mode' => 'payment_mode',
+                'contract_type' => 'customer_type',
+                'order_id' => 'order_id',
+                'status' => 'status',
+                'registration_date' => 'registration_date',
+                'activation_date' => 'activation_date',
+                'scenario' => 'scenario',
+                'base_product_name' => 'base_product_name',
+                'supervisor_firstname' => 'supervisor_firstname',
             ];
             if(isset($data[0]) && isset($data[0][1])){
                 unset($data[0][0]);
@@ -114,43 +112,49 @@ class BillController extends Controller
                         $row = [];
                         foreach($mapping as $k => $v){
                             if(isset($record[$v])){
-                                if ($v == 'Inscription Date'){
-                                    $UNIX_DATE = ($record[$v] - 25569) * 86400;
-                                    $row[$k] = gmdate("Y-m-d H:i:s", $UNIX_DATE);
-                                }else{
-                                    $row[$k] = $record[$v];
+                                if($v == 'registration_date' || $v == 'activation_date'){
+                                    $record[$v] = date('Y-m-d', strtotime(str_replace('/', '-', $record[$v])));
                                 }
+                                $row[$k] = $record[$v];
                             }
                         }
                         $row['commission'] = 0;
-                        if(isset($row['consumption'])){
+                        if(isset($row['scenario'])){
                             // Commmission calculation
-                            switch ($row['b2c_b2b']) {
-                                case 'Residentiel':
-                                    $row['commission'] +=  55;
+                            switch ($row['scenario']) {
+                                case 'port_in':
+                                    if(strpos($row['base_product_name'], 'Flash') !== false){
+                                        $row['commission'] +=  45;
+                                    }else if(strpos($row['base_product_name'], 'Star') !== false){
+                                        $row['commission'] +=  70;
+                                    }else if(strpos($row['base_product_name'], 'Spark') !== false){
+                                        $row['commission'] +=  25;
+                                    }else if(strpos($row['base_product_name'], 'Glow') !== false){
+                                        $row['commission'] +=  25;
+                                    }
                                     break;
-                                case 'Commercial':
-                                    $row['commission'] +=  85;
+                                case 'new':
+                                    if(strpos($row['base_product_name'], 'Flash') !== false){
+                                        $row['commission'] +=  25;
+                                    }else if(strpos($row['base_product_name'], 'Star') !== false){
+                                        $row['commission'] +=  35;
+                                    }else if(strpos($row['base_product_name'], 'Spark') !== false){
+                                        $row['commission'] +=  15;
+                                    }else if(strpos($row['base_product_name'], 'Glow') !== false){
+                                        $row['commission'] +=  15;
+                                    }
                                     break;
-                            }
-                            // Payment type calculation
-                            if($row['payment_type'] == 'Domiciliation'){
-                                $row['commission'] += 5;
-                            }
-                            // Bill type calculation
-                            if($row['bill'] == 'E-mail'){
-                                $row['commission'] += 5;
                             }
                         }
-                        if(count($row) > 0 && isset($row['bill_id'])){
+                        if(count($row) > 0 && isset($row['order_id'])){
                             // Setting update bill records
-                            $billObj = DB::table('bills')->where('bill_id', $row['bill_id'])->first();
+                            $telcoObj = DB::table('telco')->where('order_id', $row['order_id'])->first();
                             $row['updated_at'] = Carbon::now();
-                            if($billObj){
-                                DB::table('bills')->where('bill_id', $row['bill_id'])->update($row);
+                            if($telcoObj){
+                                DB::table('telco')->where('order_id', $row['order_id'])->update($row);
                             }else{
                                 $row['created_at'] = Carbon::now();
-                                DB::table('bills')->insert($row);
+                                DB::table('telco')->insert($row);
                             }
                         }
                     }
@@ -158,6 +162,6 @@ class BillController extends Controller
             }
             return back()->with('success', 'Data Imported successfully.');
         }
-        return view('admin.bills.import');
+        return view('admin.telco.import');
     }
 }

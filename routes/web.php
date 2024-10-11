@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\TelcoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -46,8 +47,18 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'bills'], function() {
         Route::get('/', [BillController::class, 'index'])->name('billsListing');
         Route::get('/import', [BillController::class, 'import'])->name('importBills');
+        Route::get('/reports', [BillController::class, 'reports'])->name('reportsBills');
         Route::post('/import', [BillController::class, 'import'])->name('importBillsSaved');
     });
+
+    // TELCO Routes
+    Route::group(['prefix' => 'telco'], function() {
+        Route::get('/', [TelcoController::class, 'index'])->name('telcoListing');
+        Route::get('/import', [TelcoController::class, 'import'])->name('importTelcoBills');
+        Route::get('/reports', [TelcoController::class, 'reports'])->name('reportsTelcoBills');
+        Route::post('/import', [TelcoController::class, 'import'])->name('importTelcoBillsSaved');
+    });
+
 });
 
 require __DIR__.'/auth.php';

@@ -21,12 +21,12 @@
                 </li>
                 <li class="{{ request()->routeIs(['billsListing']) ? 'active' : '' }}">
                     <a href="{{route('billsListing')}}">
-                        <i class="fas fa-list"></i><span>Bills Listing</span>
+                        <i class="fas fa-list"></i><span>Energy Bills</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs(['importBills']) ? 'active' : '' }}">
-                    <a href="{{route('importBills')}}">
-                        <i class="fas fa-money-check-alt"></i><span>Import Bills</span>
+                <li class="{{ request()->routeIs(['telcoListing']) ? 'active' : '' }}">
+                    <a href="{{route('telcoListing')}}">
+                        <i class="fas fa-list"></i><span>Telco Bills</span>
                     </a>
                 </li>
             </ul>

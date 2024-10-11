@@ -3,8 +3,12 @@
         <div class="content-page rtl-page">
             <div class="container-fluid">
                 @include('admin.helper.alert_success')
-                <h3 class="mb-2">Bills Listing</h3>
+                <h3 class="mb-2">Energy Bill Listing</h3>
                 <div class="row">
+                    <div class="col-lg-12 mb-3">
+                        <a href="{{route('importBills')}}" class="btn btn-primary btn-rounded waves-effect waves-light float-right mt-2">Import Energy Bills</a>
+                        <a href="{{route('reportsBills')}}" class="btn btn-primary btn-rounded waves-effect waves-light float-right mt-2 mr-1">Analytics Reports</a>
+                    </div>
                     <div class="col-lg-12 px-2">
                         <table class="table table-bordered table-centered mt-2 mb-0 data-table">
                             <thead>
