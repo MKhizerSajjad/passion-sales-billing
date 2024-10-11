@@ -14,8 +14,52 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-6"></div>
+                    <div class="col-12 mt-4">
+                        <div  class="col-sm-6 text-center border">
+                            <label class="label label-success">Monthly Report</label>
+                            <canvas id="monthly-chart"></canvas>
+                        </div>
+                    </div>
                 </div>                
             </div>
         </div>
     </div>
+    @push('script')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Charts Data
+                var labels = <?php echo json_encode($month['labels']); ?>;
+                var energy = <?php echo json_encode($month['energy']); ?>;
+                var telco = <?php echo json_encode($month['telco']); ?>;
+
+                var monthly_chart = document.getElementById('monthly-chart')
+                new Chart(monthly_chart, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Energy Bills',
+                                data: energy,
+                                borderColor: "rgb(89, 121, 191)",
+                                backgroundColor: "rgb(89, 121, 191, 1)",
+                                order: 0
+                            },{
+                                label: 'TELCO Bills',
+                                data: telco,
+                                borderColor: "rgb(40, 167, 69)",
+                                backgroundColor:"rgba(102, 255, 130, 1)",
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        legend: {display: true,position:"bottom"},
+                    }
+                });
+            })
+        </script>
+    @endpush
 </x-app-layout>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bill;
 use App\Models\Cases;
+use App\Models\Telco;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,9 +14,36 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $dateS = Carbon::now()->startOfMonth()->subMonth(12)->toDateString();
+        $dateE = Carbon::now()->startOfMonth()->addMonth(1)->toDateString(); 
+
+        $bills = Bill::select('id', 'inscription_date')->whereBetween('inscription_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
+            return Carbon::parse($date->inscription_date)->format('m');
+        });
+
+        $telco = Telco::select('id', 'registration_date')->whereBetween('registration_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
+            return Carbon::parse($date->registration_date)->format('m');
+        });
+
+        $chart = [];
+        foreach ($bills as $key => $value) {
+            $chart[$key] = ['bills' => count($value), 'telco' => 0];
+        }
+        foreach ($telco as $key => $value) {
+            if(in_array($key, array_keys($chart))){
+                $chart[$key] = ['bills' => $chart[$key]['bills'], 'telco' => count($value)];
+            }else{
+                $chart[$key] = ['bills' => 0, 'telco' => count($value)];
+            }
+        }
+        ksort($chart);
+        $month['labels'] = array_keys($chart);
+        $month['labels'] = array_values(array_reduce($month['labels'],function($rslt,$m){ $rslt[$m] = date('F',mktime(0,0,0,$m,10)); return $rslt; }));
         
+        $month['energy'] = array_column($chart, 'bills');
+        $month['telco'] = array_column($chart, 'telco');
         
-        return view('admin.dashboard');
+        return view('admin.dashboard', compact('month'));
 
         if(Auth::user()->user_type != 3) {
 
