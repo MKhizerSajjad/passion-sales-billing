@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\BillsImport;
 use App\Models\Bill;
+use App\Models\Telco;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -18,47 +19,55 @@ class TelcoController extends Controller
     }
 
     public function reports(Request $request){
+        
         $dateFilter = (filled($request->days) && !empty($request->days)) ? $request->days : 30;
         $dateRange = Carbon::now()->subDays($dateFilter);
-        $client = (filled($request->agent) && !empty($request->agent)) ? $request->agent : '';
+        $client = (filled($request->supervisor) && !empty($request->supervisor)) ? $request->supervisor : '';
 
-        $statusList = Bill::
-                      whereDate( 'inscription_date', '>=', $dateRange);
+        $statusList = Telco::whereDate( 'registration_date', '>=', $dateRange);
         if($client != '') {
-            $statusList = $statusList->where('userfield_agent', $client);
+            $statusList = $statusList->where('supervisor_firstname', $client);
         }
+
         $statusList = $statusList->get()->groupBy('status');
 
-        $statusCount = ['Contrat effectif' => 0, 'Contrat non effectif' => 0];
-        $payment = ['effectif' => 0, 'non effectif' => 0];
+        $statusCount = ['Active' => 0, 'Other' => 0];
+        $payment = ['Active' => 0, 'Other' => 0];
         foreach ($statusList as $key => $value) {
             switch ($key) {
-                case 'Contrat effectif':
-                    $statusCount['Contrat effectif'] = count($value);
-                    $payment['effectif'] += $value->sum('commission');
+                case 'ACTIVATED':
+                    $statusCount['Active'] = count($value);
+                    $payment['Active'] += $value->sum('commission');
                     break;
                 default:
-                    $statusCount['Contrat non effectif'] += count($value);
-                    $payment['non effectif'] += $value->sum('commission');
+                    $statusCount['Other'] += count($value);
+                    $payment['Other'] += $value->sum('commission');
                     break;
+                // case 'INCOMPLETE':
+                //     $statusCount['Other'] += count($value);
+                //     $payment['Other'] += $value->sum('commission');
+                //     break;
+                // case 'IN_DELIVERY':
+                //     $statusCount['Other'] += count($value);
+                //     $payment['Other'] += $value->sum('commission');
+                //     break;
             }
         }
         
         $statusChart = $billChart = [];
-        $chartInfo = Bill::
-                     whereDate( 'inscription_date', '>=', $dateRange);
+        $chartInfo = Telco::whereDate( 'registration_date', '>=', $dateRange);
         if($client != '') {
-            $chartInfo = $chartInfo->where('userfield_agent', $client);
+            $chartInfo = $chartInfo->where('supervisor_firstname', $client);
         }            
-        $chartInfo = $chartInfo->orderBy('inscription_date')->get();
+        $chartInfo = $chartInfo->orderBy('registration_date')->get();
         foreach ($chartInfo as $bill) {
-            $index = date('d M', strtotime($bill->inscription_date));
+            $index = date('d M', strtotime($bill->registration_date));
             if(!in_array($index, array_keys($statusChart))) {
                 $statusChart[$index] = ['label' => $index, 'effectif' => 0, 'non effectif' => 0];
                 $billChart[$index] = ['label' => $index, 'paid' => 0, 'unpaid' => 0];
             }
             switch ($bill->status) {
-                case 'Contrat effectif':
+                case 'ACTIVATED':
                     $statusChart[$index]['effectif'] += $bill->commission;
                     $billChart[$index]['paid'] += 1;
                     break;
@@ -66,6 +75,14 @@ class TelcoController extends Controller
                     $statusChart[$index]['non effectif'] += $bill->commission;
                     $billChart[$index]['unpaid'] += 1;
                     break;
+                // case 'INCOMPLETE':
+                //     $statusChart[$index]['non effectif'] += $bill->commission;
+                //     $billChart[$index]['unpaid'] += 1;
+                //     break;
+                // case 'IN_DELIVERY':
+                //     $statusChart[$index]['non effectif'] += $bill->commission;
+                //     $billChart[$index]['unpaid'] += 1;
+                //     break;
             }
         }
         
@@ -76,7 +93,7 @@ class TelcoController extends Controller
         $chart['paidBills'] = array_column($billChart, 'paid');
         $chart['unpaidBills'] = array_column($billChart, 'unpaid');
 
-        $agentList = Bill::select('userfield_agent')->distinct()->get()->pluck('userfield_agent')->toArray();
+        $agentList = Telco::select('supervisor_firstname')->distinct()->get()->pluck('supervisor_firstname')->toArray();
 
         return view('admin.telco.reports', compact('statusCount', 'payment', 'chart', 'agentList'));
     }

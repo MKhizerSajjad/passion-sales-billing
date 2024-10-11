@@ -5,7 +5,7 @@
                 @include('admin.helper.alert_success')
                 <h3 class="mb-2">Telco Reports</h3>
                 <div class="row">
-                    @include('admin.bills.charts.graph')
+                    @include('admin.telco.charts.graph')
                 </div>
             </div>
         </div>

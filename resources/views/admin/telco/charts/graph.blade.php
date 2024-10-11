@@ -13,11 +13,13 @@
             </select>
         </div>
         <div class="form-group col-5">
-            <label for="status">Agent</label>
+            <label for="status">Supervisor</label>
             <select class="form-control" name="agent" id="agent" onchange="validation()">
-                <option value="">Select Agent</option>
+                <option value="">Select Supervisor</option>
                 @foreach ($agentList as $agent)
-                    <option value="{{$agent}}" {{request('agent') == $agent ? 'selected' : ''}}>{{$agent}}</option>
+                    @if ($agent != '')
+                        <option value="{{$agent}}" {{request('agent') == $agent ? 'selected' : ''}}>{{$agent}}</option>
+                    @endif
                 @endforeach
             </select>
         </div>
@@ -40,7 +42,7 @@
                                 Clients effectifs
                             </div>
                             <div class="text-white col-4 text-right">
-                                {{$statusCount['Contrat effectif']}}
+                                {{$statusCount['Active']}}
                             </div>
                         </div>
                     </div>
@@ -57,7 +59,7 @@
                                 Clients en ettente
                             </div>
                             <div class="text-white col-4 text-right">
-                                {{$statusCount['Contrat non effectif']}}
+                                {{$statusCount['Other']}}
                             </div>
                         </div>
                     </div>
@@ -74,7 +76,7 @@
                                 Commissions
                             </div>
                             <div class="text-white col-4 text-right">
-                                {{$payment['effectif']}}
+                                {{$payment['Active']}}
                             </div>
                         </div>
                     </div>
@@ -91,7 +93,7 @@
                                 Commissions en attente
                             </div>
                             <div class="text-white col-4 text-right">
-                                {{$payment['non effectif']}}
+                                {{$payment['Other']}}
                             </div>
                         </div>
                     </div>
