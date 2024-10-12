@@ -38,7 +38,9 @@ class DashboardController extends Controller
         }
         ksort($chart);
         $month['labels'] = array_keys($chart);
-        $month['labels'] = array_values(array_reduce($month['labels'],function($rslt,$m){ $rslt[$m] = date('F',mktime(0,0,0,$m,10)); return $rslt; }));
+        if(is_array($month['labels']) && count($month['labels'])>0){
+            $month['labels'] = array_values(array_reduce($month['labels'],function($rslt,$m){ $rslt[$m] = date('F',mktime(0,0,0,$m,10)); return $rslt; }));
+        }
         
         $month['energy'] = array_column($chart, 'bills');
         $month['telco'] = array_column($chart, 'telco');
