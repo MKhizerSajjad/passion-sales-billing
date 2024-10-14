@@ -17,23 +17,37 @@ class DashboardController extends Controller
         $dateS = Carbon::now()->startOfMonth()->subMonth(12)->toDateString();
         $dateE = Carbon::now()->startOfMonth()->addMonth(1)->toDateString(); 
 
-        $bills = Bill::select('id', 'inscription_date')->whereBetween('inscription_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
+        $bills = Bill::select('id', 'inscription_date', 'commission', 'status')->whereBetween('inscription_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
             return Carbon::parse($date->inscription_date)->format('m');
         });
 
-        $telco = Telco::select('id', 'registration_date')->whereBetween('registration_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
+        $telco = Telco::select('id', 'registration_date', 'commission', 'status')->whereBetween('registration_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
             return Carbon::parse($date->registration_date)->format('m');
         });
 
         $chart = [];
         foreach ($bills as $key => $value) {
-            $chart[$key] = ['bills' => count($value), 'telco' => 0];
+            // $filtered = ($value->pluck('commission', 'status'));
+            $filtered = $value->filter(function($item){
+                return $item->status == 'Contrat effectif';
+            });
+
+            $comm = array_sum($filtered->pluck('commission')->toArray());
+            
+            $chart[$key] = ['bills' => count($value), 'telco' => 0, 'com_b' => $comm, 'com_t' => 0];
         }
         foreach ($telco as $key => $value) {
+            // $comm = array_sum($value->pluck('commission')->toArray());
+            $filtered = $value->filter(function($item){
+                return $item->status == 'ACTIVATED';
+            });
+
+            $comm = array_sum($filtered->pluck('commission')->toArray());
+            
             if(in_array($key, array_keys($chart))){
-                $chart[$key] = ['bills' => $chart[$key]['bills'], 'telco' => count($value)];
+                $chart[$key] = ['bills' => $chart[$key]['bills'], 'telco' => count($value), 'com_b' => $chart[$key]['com_b'], 'com_t' => $comm];
             }else{
-                $chart[$key] = ['bills' => 0, 'telco' => count($value)];
+                $chart[$key] = ['bills' => 0, 'telco' => count($value), 'com_b' => 0, 'com_t' => $comm];
             }
         }
         ksort($chart);
@@ -44,6 +58,12 @@ class DashboardController extends Controller
         
         $month['energy'] = array_column($chart, 'bills');
         $month['telco'] = array_column($chart, 'telco');
+        $month['com_b'] = array_column($chart, 'com_b');
+        $month['com_t'] = array_column($chart, 'com_t');
+
+        // Total Count Current Month
+        $curentMonth = Carbon::now()->startOfMonth()->addMonth(-1)->toDateString();
+        $bill = Bill::where('status', 'Contrat effectif')->whereDate('inscription_date', '>', $curentMonth)->get();
         
         return view('admin.dashboard', compact('month'));
 

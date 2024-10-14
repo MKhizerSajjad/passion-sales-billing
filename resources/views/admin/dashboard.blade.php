@@ -16,9 +16,15 @@
                     </div>
                     <div class="col-6"></div>
                     <div class="col-12 mt-4">
-                        <div  class="col-sm-6 text-center border">
-                            <label class="label label-success">Monthly Report</label>
-                            <canvas id="monthly-chart"></canvas>
+                        <div class="row">
+                            <div  class="col-sm-6 text-center border">
+                                <label class="label label-success">Monthly Report</label>
+                                <canvas id="monthly-chart"></canvas>
+                            </div>
+                            <div  class="col-sm-6 text-center border">
+                                <label class="label label-success">Commision Report</label>
+                                <canvas id="commission-chart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>                
@@ -33,8 +39,11 @@
                 var labels = <?php echo json_encode($month['labels']); ?>;
                 var energy = <?php echo json_encode($month['energy']); ?>;
                 var telco = <?php echo json_encode($month['telco']); ?>;
+                var energy_com = <?php echo json_encode($month['com_b']); ?>;
+                var telco_com= <?php echo json_encode($month['com_t']); ?>;
 
                 var monthly_chart = document.getElementById('monthly-chart')
+                var commission_chart = document.getElementById('commission-chart')
                 new Chart(monthly_chart, {
                     type: 'bar',
                     data: {
@@ -49,6 +58,30 @@
                             },{
                                 label: 'TELCO Bills',
                                 data: telco,
+                                borderColor: "rgb(40, 167, 69)",
+                                backgroundColor:"rgba(102, 255, 130, 1)",
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        legend: {display: true,position:"bottom"},
+                    }
+                });
+                new Chart(commission_chart, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Energy Commission',
+                                data: energy_com,
+                                borderColor: "rgb(89, 121, 191)",
+                                backgroundColor: "rgb(89, 121, 191, 1)",
+                                order: 0
+                            },{
+                                label: 'TELCO Commission',
+                                data: telco_com,
                                 borderColor: "rgb(40, 167, 69)",
                                 backgroundColor:"rgba(102, 255, 130, 1)",
                                 order: 1
