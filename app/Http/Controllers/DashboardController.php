@@ -62,8 +62,36 @@ class DashboardController extends Controller
         $month['com_t'] = array_column($chart, 'com_t');
 
         // Total Count Current Month
-        $curentMonth = Carbon::now()->startOfMonth()->addMonth(-1)->toDateString();
-        $bill = Bill::where('status', 'Contrat effectif')->whereDate('inscription_date', '>', $curentMonth)->get();
+        $currMonth = date('m');
+        $energyChart = ['Contrat effectif' => 0, 'Contrat en ettente' => 0];
+        $bills = Bill::select('status')->whereRaw('MONTH(inscription_date) = ?' ,[$currMonth]) ->whereRaw('YEAR(inscription_date) = ?' ,[date('Y')])->get()->groupBy('status');
+        if(count($bills)>0){
+            foreach($bills as $key => $bill){
+                switch ($key) {
+                    case 'Contrat effectif':
+                        $energyChart['Contrat effectif'] = count($bill);
+                        break;
+                    default:
+                        $energyChart['Contrat en ettente'] += count($bill);
+                        break;
+                }
+            }
+        }
+
+        $month['bill_pie']['label'] = array_keys($energyChart);
+        $month['bill_pie']['values'] =  array_values($energyChart);
+
+        $telcoChart = [];
+        $telco = Telco::select('status')->whereRaw('MONTH(registration_date) = ?' ,[$currMonth]) ->whereRaw('YEAR(registration_date) = ?' ,[date('Y')])->get()->groupBy('status');
+
+        foreach ($telco as $telKey => $val) {
+            $telcoChart[$telKey] = count($val);
+        }
+
+        $month['telso_pie'] = ['label' => [], 'values' => []];
+        if(count($telcoChart)>0){
+            $month['telso_pie'] = ['label' => array_keys($telcoChart), 'values' => array_values($telcoChart)];
+        }
         
         return view('admin.dashboard', compact('month'));
 
