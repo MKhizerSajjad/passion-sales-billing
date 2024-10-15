@@ -56,7 +56,7 @@
                                 <i class="fas fa-file-invoice fa-3x"></i>
                             </div>
                             <div class="text-white col-8">
-                                Clients en ettente
+                                Clients en attente
                             </div>
                             <div class="text-white col-4 text-right">
                                 {{$statusCount['Other']}}

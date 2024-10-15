@@ -3,7 +3,7 @@
         <div class="content-page rtl-page">
             <div class="container-fluid">
                 @include('admin.helper.alert_success')
-                <h3>Telco Import Bills</h3>
+                <h3>Import Telco Contract</h3>
                 <form action="{{ route('importTelcoBillsSaved') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">

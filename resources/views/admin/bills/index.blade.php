@@ -6,7 +6,7 @@
                 <h3 class="mb-2">Energy Bill Listing</h3>
                 <div class="row">
                     <div class="col-lg-12 mb-3">
-                        <a href="{{route('importBills')}}" class="btn btn-primary btn-rounded waves-effect waves-light float-right mt-2">Import Energy Bills</a>
+                        <a href="{{route('importBills')}}" class="btn btn-primary btn-rounded waves-effect waves-light float-right mt-2">Import Energy Contract</a>
                         <a href="{{route('reportsBills')}}" class="btn btn-primary btn-rounded waves-effect waves-light float-right mt-2 mr-1">Analytics Reports</a>
                     </div>
                     <div class="col-lg-12 px-2">

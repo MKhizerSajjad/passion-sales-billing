@@ -39,7 +39,7 @@
                             </div>
                             <div class="col-sm-4 text-center border px-0">
                                 <div class="graph bg-white px-2">
-                                    <label class="label label-success">Telso Current Month</label>
+                                    <label class="label label-success">Telco Current Month</label>
                                     <canvas id="tel-month-chart"></canvas>
                                 </div>
                             </div>
@@ -76,13 +76,13 @@
                         labels: labels,
                         datasets: [
                             {
-                                label: 'Energy Bills',
+                                label: 'Energy Contract',
                                 data: energy,
                                 borderColor: "rgb(89, 121, 191)",
                                 backgroundColor: "rgb(89, 121, 191, 1)",
                                 order: 0
                             },{
-                                label: 'TELCO Bills',
+                                label: 'TELCO Contract',
                                 data: telco,
                                 borderColor: "rgb(40, 167, 69)",
                                 backgroundColor:"rgba(102, 255, 130, 1)",

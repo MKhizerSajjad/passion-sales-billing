@@ -63,7 +63,7 @@ class DashboardController extends Controller
 
         // Total Count Current Month
         $currMonth = date('m');
-        $energyChart = ['Contrat effectif' => 0, 'Contrat en ettente' => 0];
+        $energyChart = ['Contrat effectif' => 0, 'Contrat en attente' => 0];
         $bills = Bill::select('status')->whereRaw('MONTH(inscription_date) = ?' ,[$currMonth]) ->whereRaw('YEAR(inscription_date) = ?' ,[date('Y')])->get()->groupBy('status');
         if(count($bills)>0){
             foreach($bills as $key => $bill){
@@ -72,7 +72,7 @@ class DashboardController extends Controller
                         $energyChart['Contrat effectif'] = count($bill);
                         break;
                     default:
-                        $energyChart['Contrat en ettente'] += count($bill);
+                        $energyChart['Contrat en attente'] += count($bill);
                         break;
                 }
             }

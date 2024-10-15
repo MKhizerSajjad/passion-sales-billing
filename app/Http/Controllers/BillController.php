@@ -92,29 +92,30 @@ class BillController extends Controller
             $data = Excel::toArray(new BillsImport, $file);
             $header = $records = [];
             $mapping = [
-                'bill_id' => 'ID contract',
+                'bill_id' => 'id',
                 'userfield_agent' => 'Userfield_Agent',
-                'agent' => 'Agent Name',
-                'status' => 'Status',
-                'payment_type' => 'Payment type',
-                'bill' => 'Bill type',
-                'b2c_b2b' => 'B2c/B2B',
-                'inscription_date' => 'Inscription Date',
-                'consumption' => 'consumption',
+                'agent' => 'Agent',
+                'status' => 'Statut',
+                'payment_type' => 'Type de paiement',
+                'bill' => 'factures',
+                'b2c_b2b' => 'individual',
+                'inscription_date' => 'DateInscription',
+                'consumption' => 'Consommation',
                 'contract_type' => 'contract_type',
-                'product_type' => 'Product type',
+                'product_type' => 'Type de paiement',
 
             ];
             if(isset($data[0]) && isset($data[0][1])){
-                unset($data[0][0]);
-                $header = $data[0][1];
+                // unset($data[0][0]);
+                $header = $data[0][0];
+                $importData = [];
                 foreach($data[0] as $key => $value){
-                    if($key > 1){
+                    if($key > 0){
                         $record = array_combine($header, $value);
                         $row = [];
                         foreach($mapping as $k => $v){
                             if(isset($record[$v])){
-                                if ($v == 'Inscription Date'){
+                                if ($v == 'DateInscription'){
                                     $UNIX_DATE = ($record[$v] - 25569) * 86400;
                                     $row[$k] = gmdate("Y-m-d H:i:s", $UNIX_DATE);
                                 }else{
@@ -153,8 +154,12 @@ class BillController extends Controller
                                 DB::table('bills')->insert($row);
                             }
                         }
+                        // $row['created_at'] = Carbon::now();
+                        // $importData[] = $row;
+                        // Bill::updateOrCreate($row,['bill_id'=>$row['bill_id']]);
                     }
                 }
+                // dd(count($importData));
             }
             return back()->with('success', 'Data Imported successfully.');
         }

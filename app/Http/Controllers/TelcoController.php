@@ -22,7 +22,7 @@ class TelcoController extends Controller
         
         $dateFilter = (filled($request->days) && !empty($request->days)) ? $request->days : 30;
         $dateRange = Carbon::now()->subDays($dateFilter);
-        $client = (filled($request->supervisor) && !empty($request->supervisor)) ? $request->supervisor : '';
+        $client = (filled($request->agent) && !empty($request->agent)) ? $request->agent : '';
 
         $statusList = Telco::whereDate( 'registration_date', '>=', $dateRange);
         if($client != '') {
@@ -58,7 +58,7 @@ class TelcoController extends Controller
         $chartInfo = Telco::whereDate( 'registration_date', '>=', $dateRange);
         if($client != '') {
             $chartInfo = $chartInfo->where('supervisor_firstname', $client);
-        }            
+        }
         $chartInfo = $chartInfo->orderBy('registration_date')->get();
         foreach ($chartInfo as $bill) {
             $index = date('d M', strtotime($bill->registration_date));
