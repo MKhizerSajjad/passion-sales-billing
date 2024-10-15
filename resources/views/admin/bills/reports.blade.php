@@ -21,8 +21,47 @@
 
                 var paidBills = <?php echo json_encode($chart['paidBills']); ?>;
                 var unpaidBills = <?php echo json_encode($chart['unpaidBills']); ?>;
-
+                
                 var commissions_chart = document.getElementById('commissions-chart')
+                
+                var pmt_chart = document.getElementById('payment-chart')
+                var pmtLBL = <?php echo json_encode($chart['payment_lbl']); ?>;
+                var pmtVal = <?php echo json_encode($chart['payment_val']); ?>;
+                new Chart(pmt_chart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: pmtLBL,
+                        datasets: [{
+                            data: pmtVal,    
+                        }]
+                    }
+                });
+                var bill_chart = document.getElementById('b-chart')
+                var billLBL = <?php echo json_encode($chart['bill_lbl']); ?>;
+                var billVal = <?php echo json_encode($chart['bill_val']); ?>;
+                new Chart(bill_chart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: billLBL,
+                        datasets: [{
+                            data: billVal,    
+                        }]
+                    }
+                });
+
+                var cnt_chart = document.getElementById('cont-chart')
+                var cntLBL = <?php echo json_encode($chart['cont_lbl']); ?>;
+                var cntVal = <?php echo json_encode($chart['cont_val']); ?>;
+                new Chart(cnt_chart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: cntLBL,
+                        datasets: [{
+                            data: cntVal,    
+                        }]
+                    }
+                });
+
                 new Chart(commissions_chart, {
                     type: 'bar',
                     data: {
@@ -73,6 +112,8 @@
                         legend: {display: true,position:"bottom"},
                     }
                 });
+
+
             })
 
             $(document).on('click', '.reset-form', function(event){

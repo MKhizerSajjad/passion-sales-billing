@@ -39,9 +39,12 @@ class BillController extends Controller
         if($client != '') {
             $statusList = $statusList->where('userfield_agent', $client);
         }
-        $chartInfo = $statusList;
+        $paymentInfo = $billInfo = $contractInfo = $chartInfo = $statusList;
 
         $statusList = $statusList->get()->groupBy('status');
+        $paymentInfo = $paymentInfo->get()->groupBy('payment_type');
+        $billInfo = $billInfo->get()->groupBy('bill');
+        $contractInfo = $contractInfo->get()->groupBy('contract_type');
 
         $statusCount = ['Contrat effectif' => 0, 'Contrat non effectif' => 0];
         $payment = ['effectif' => 0, 'non effectif' => 0];
@@ -56,6 +59,16 @@ class BillController extends Controller
                     $payment['non effectif'] += $value->sum('commission');
                     break;
             }
+        }
+        $paymentChart = $bChart = $contractChart = [];
+        foreach ($paymentInfo as $pk => $pv) {
+            $paymentChart[$pk] = count($pv);
+        }
+        foreach ($billInfo as $bk => $bv) {
+            $bChart[$bk] = count($bv);
+        }
+        foreach ($contractInfo as $ck => $cv) {
+            $contractChart[$ck] = count($cv);
         }
         
         $statusChart = $billChart = [];
@@ -85,6 +98,15 @@ class BillController extends Controller
 
         $chart['paidBills'] = array_column($billChart, 'paid');
         $chart['unpaidBills'] = array_column($billChart, 'unpaid');
+
+        $chart['payment_lbl'] = array_keys($paymentChart);
+        $chart['payment_val'] = array_values($paymentChart);
+        
+        $chart['bill_lbl'] = array_keys($bChart);
+        $chart['bill_val'] = array_values($bChart);
+        
+        $chart['cont_lbl'] = array_keys($contractChart);
+        $chart['cont_val'] = array_values($contractChart);
 
         $agentList = Bill::select('userfield_agent')->distinct()->get()->pluck('userfield_agent')->toArray();
 
