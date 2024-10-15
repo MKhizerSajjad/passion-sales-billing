@@ -124,7 +124,7 @@ class BillController extends Controller
             $data = Excel::toArray(new BillsImport, $file);
             $header = $records = [];
             $mapping = [
-                'bill_id' => 'id',
+                'bill_id' => 'EAN',
                 'userfield_agent' => 'Userfield_Agent',
                 'agent' => 'Agent',
                 'status' => 'Statut',
@@ -145,15 +145,27 @@ class BillController extends Controller
                     if($key > 0){
                         $record = array_combine($header, $value);
                         $row = [];
+                        if($record['EAN'] == null){
+                            continue;
+                        }
                         foreach($mapping as $k => $v){
                             if(isset($record[$v])){
                                 if ($v == 'DateInscription'){
                                     $UNIX_DATE = ($record[$v] - 25569) * 86400;
                                     $row[$k] = gmdate("Y-m-d H:i:s", $UNIX_DATE);
                                 }else{
-                                    $row[$k] = $record[$v];
+                                    $row[$k] = trim($record[$v], "'");
+                                }
+                            }else{
+                                if($v == "Agent"){
+                                    $row[$k] = 'Empty Agent';
+                                }else if($v == 'Consommation'){
+                                    $row[$k] = 0;
                                 }
                             }
+                        }
+                        if(count($row) != 11){
+                            dd($row);
                         }
                         $row['commission'] = 0;
                         if(isset($row['consumption'])){
@@ -175,23 +187,18 @@ class BillController extends Controller
                                 $row['commission'] += 5;
                             }
                         }
-                        if(count($row) > 0 && isset($row['bill_id'])){
-                            // Setting update bill records
-                            $billObj = DB::table('bills')->where('bill_id', $row['bill_id'])->first();
-                            $row['updated_at'] = Carbon::now();
-                            if($billObj){
-                                DB::table('bills')->where('bill_id', $row['bill_id'])->update($row);
-                            }else{
-                                $row['created_at'] = Carbon::now();
-                                DB::table('bills')->insert($row);
-                            }
+                        $row['created_at'] = date('Y-m-d H:i:s');
+                        $row['updated_at'] = date('Y-m-d H:i:s');
+                        $row['id'] = $row['bill_id'];
+                        $importData[] = $row;
+                        if(count($importData) == 100){
+                            Bill::upsert($importData,['id'], array_keys($mapping));
+                            $importData = [];
                         }
-                        // $row['created_at'] = Carbon::now();
-                        // $importData[] = $row;
-                        // Bill::updateOrCreate($row,['bill_id'=>$row['bill_id']]);
                     }
                 }
                 // dd(count($importData));
+                Bill::upsert($importData,['id'], array_keys($mapping));
             }
             return back()->with('success', 'Data Imported successfully.');
         }
