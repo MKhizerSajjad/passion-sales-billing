@@ -18,15 +18,29 @@ class BillController extends Controller
     }
 
     public function reports(Request $request){
-        $dateFilter = (filled($request->days) && !empty($request->days)) ? $request->days : 30;
-        $dateRange = Carbon::now()->subDays($dateFilter);
+
+        $startDate = date('Y-m-01');
+        $endDate = date('Y-m-30');
+
+        if(filled($request->startDate)){
+            $startDate = $request->startDate;
+        }else{
+            $request->merge(['startDate'=> $startDate]);
+        }        
+        if(filled($request->endDate)){
+            $endDate = $request->endDate;
+        }else{
+            $request->merge(['endDate'=> $endDate]);
+        }
+
         $client = (filled($request->agent) && !empty($request->agent)) ? $request->agent : '';
 
-        $statusList = Bill::
-                      whereDate( 'inscription_date', '>=', $dateRange);
+        $statusList = Bill::whereBetween('inscription_date',[$startDate,$endDate]);
         if($client != '') {
             $statusList = $statusList->where('userfield_agent', $client);
         }
+        $chartInfo = $statusList;
+
         $statusList = $statusList->get()->groupBy('status');
 
         $statusCount = ['Contrat effectif' => 0, 'Contrat non effectif' => 0];
@@ -45,11 +59,7 @@ class BillController extends Controller
         }
         
         $statusChart = $billChart = [];
-        $chartInfo = Bill::
-                     whereDate( 'inscription_date', '>=', $dateRange);
-        if($client != '') {
-            $chartInfo = $chartInfo->where('userfield_agent', $client);
-        }            
+        
         $chartInfo = $chartInfo->orderBy('inscription_date')->get();
         foreach ($chartInfo as $bill) {
             $index = date('d M', strtotime($bill->inscription_date));

@@ -80,17 +80,17 @@
             })
 
             function validation() {
-                var days = document.getElementById('days').value;
-                var agent = document.getElementById('agent').value;
-                _params = '?';
-                if(days != '') {
-                    _params += 'days='+days+'&';
-                }
-                if(agent != '') {
-                    _params += 'agent='+agent;
-                }
-                _params = _params.replace(/^&+|&+$/g, '');
-                window.location.href = _params
+                // var days = document.getElementById('days').value;
+                // var agent = document.getElementById('agent').value;
+                // _params = '?';
+                // if(days != '') {
+                //     _params += 'days='+days+'&';
+                // }
+                // if(agent != '') {
+                //     _params += 'agent='+agent;
+                // }
+                // _params = _params.replace(/^&+|&+$/g, '');
+                // window.location.href = _params
             }
         </script>
     @endpush

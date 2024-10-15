@@ -1,18 +1,16 @@
-<div class="col-8">
+<div class="col-12">
     <h4 class="page-title">Filters</h4>
+    <form action="{{route('reportsTelcoBills')}}" method="get">
     <div class="row">
-        <div class="form-group col-5">
-            <label for="days">Days</label>
-            <select class="form-control" name="days" id="days" onchange="validation()">
-                <option value="">Select Days</option>
-                <option value="7" {{request('days') == 7 ? 'selected' : ''}}>Last Week Days</option>
-                <option value="15" {{request('days') == 15 ? 'selected' : ''}}>Last 15 Days</option>
-                <option value="30" {{request('days') == 30 ? 'selected' : ''}}>Last Month Days</option>
-                <option value="60" {{request('days') == 60 ? 'selected' : ''}}>Last 2 Month Days</option>
-                <option value="90" {{request('days') == 90 ? 'selected' : ''}}>Last 3 Month Days</option>
-            </select>
+        <div class="form-group col-3">
+            <label for="startDate">Start Date</label>
+            <input type="date" name="startDate" id="startDate" class="form-control" value="{{request('startDate')}}">
         </div>
-        <div class="form-group col-5">
+        <div class="form-group col-3">
+            <label for="endDate">End Date</label>
+            <input type="date" name="endDate" id="endDate" class="form-control" value="{{request('endDate')}}">
+        </div>
+        <div class="form-group col-3">
             <label for="status">Supervisor</label>
             <select class="form-control" name="agent" id="agent" onchange="validation()">
                 <option value="">Select Supervisor</option>
@@ -23,10 +21,12 @@
                 @endforeach
             </select>
         </div>
-        <div class="form-group col-2 align-content-end">
-            <button type="button" class="btn btn-primary reset-form">Reset</button>
+        <div class="form-group col-3 pt-4 text-right">
+            <button type="button" class="btn btn-warning reset-form">Reset</button>
+            <button type="submit" class="btn btn-primary reset-form">Submit</button>
         </div>
     </div>
+    </form>
 </div>
 <div class="container-fluid pt-4">
     <div class="col-12">
