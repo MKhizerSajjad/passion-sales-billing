@@ -73,6 +73,19 @@
                         legend: {display: true,position:"bottom"},
                     }
                 });
+
+                var prod_chart = document.getElementById('prod-chart')
+                var prodLBL = <?php echo json_encode($chart['prod_lbl']); ?>;
+                var prodVAL = <?php echo json_encode($chart['prod_val']); ?>;
+                new Chart(prod_chart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: prodLBL,
+                        datasets: [{
+                            data: prodVAL,    
+                        }]
+                    }
+                });
             })
 
             $(document).on('click', '.reset-form', function(event){

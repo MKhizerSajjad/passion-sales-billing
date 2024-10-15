@@ -105,13 +105,20 @@
 
 <div class="col-12">
     <div class="row">
-        <div class="col-sm-6 text-center">
+        <div class="col-sm-6 text-center border bg-white">
             <label class="label label-success">Bills</label>
             <canvas id="bills-chart"></canvas>
         </div>
-        <div  class="col-sm-6 text-center border">
+        <div  class="col-sm-6 text-center border border bg-white">
             <label class="label label-success">Commissions</label>
             <canvas id="commissions-chart"></canvas>
         </div>
     </div>
+</div>
+<div class="col-12 mt-3">
+    <div class="row">
+        <div class="col-sm-4 text-center border bg-white">
+            <label class="label label-success">Product</label>
+            <canvas id="prod-chart"></canvas>
+        </div>
 </div>

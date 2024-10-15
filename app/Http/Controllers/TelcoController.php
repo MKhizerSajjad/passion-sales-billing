@@ -41,10 +41,11 @@ class TelcoController extends Controller
             $statusList = $statusList->where('supervisor_firstname', $client);
         }
 
-        $chartInfo = $statusList;
+        $productInfo = $chartInfo = $statusList;
 
         $statusList = $statusList->get()->groupBy('status');
-
+        $productInfo = $productInfo->get()->groupBy('base_product_name');
+        
         $statusCount = ['Active' => 0, 'Other' => 0];
         $payment = ['Active' => 0, 'Other' => 0];
         foreach ($statusList as $key => $value) {
@@ -68,7 +69,10 @@ class TelcoController extends Controller
             }
         }
         
-        $statusChart = $billChart = [];
+        $productChart = $statusChart = $billChart = [];
+        foreach ($productInfo as $pk => $pv) {
+            $productChart[$pk] = count($pv);
+        }
         
         $chartInfo = $chartInfo->orderBy('registration_date')->get();
         foreach ($chartInfo as $bill) {
@@ -103,6 +107,9 @@ class TelcoController extends Controller
 
         $chart['paidBills'] = array_column($billChart, 'paid');
         $chart['unpaidBills'] = array_column($billChart, 'unpaid');
+
+        $chart['prod_lbl'] = array_keys($productChart);
+        $chart['prod_val'] = array_values($productChart);
 
         $agentList = Telco::select('supervisor_firstname')->distinct()->get()->pluck('supervisor_firstname')->toArray();
 
