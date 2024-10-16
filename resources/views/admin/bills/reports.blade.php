@@ -3,7 +3,7 @@
         <div class="content-page rtl-page">
             <div class="container-fluid">
                 @include('admin.helper.alert_success')
-                <h3 class="mb-2">Energy Reports</h3>
+                <h2 class="mb-2">Energy Reports</h2>
                 <div class="row">
                     @include('admin.bills.charts.graph')
                 </div>

@@ -1,5 +1,5 @@
 <div class="col-12">
-    <h4 class="page-title">Filters</h4>
+    <h3 class="page-title mb-4">Filters</h3>
     <form action="{{route('reportsTelcoBills')}}" method="get">
     <div class="row">
         <div class="form-group col-3">
@@ -31,7 +31,7 @@
 <div class="container-fluid pt-4">
     <div class="col-12">
         <div class="row">
-            <div class="col-3">
+            <div class="col-sm-12 col-md-3 col-lg">
                 <div class="row">
                     <div class="col-11 card bg-success w-25 p-3 mx-2">
                         <div class="row">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-sm-12 col-md-3 col-lg">
                 <div class="row">
                     <div class="col-11 card bg-info w-25 p-3 mx-2">
                         <div class="row">
@@ -65,7 +65,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-sm-12 col-md-3 col-lg">
                 <div class="row">
                     <div class="col-11 card bg-dark w-25 p-3 mx-2">
                         <div class="row">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-sm-12 col-md-3 col-lg">
                 <div class="row">
                     <div class="col-11 card bg-secondary w-25 p-3 mx-2">
                         <div class="row">

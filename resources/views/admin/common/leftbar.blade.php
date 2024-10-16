@@ -21,12 +21,12 @@
                 </li>
                 <li class="{{ request()->routeIs(['billsListing']) ? 'active' : '' }}">
                     <a href="{{route('billsListing')}}">
-                        <i class="fas fa-list"></i><span>Energy Contract</span>
+                        <i class="fas fa-list"></i><span>Contrats énergie </span>
                     </a>
                 </li>
                 <li class="{{ request()->routeIs(['telcoListing']) ? 'active' : '' }}">
                     <a href="{{route('telcoListing')}}">
-                        <i class="fas fa-list"></i><span>Telco Contract</span>
+                        <i class="fas fa-list"></i><span>Contrats Telco</span>
                     </a>
                 </li>
             </ul>
