@@ -164,9 +164,9 @@ class BillController extends Controller
                                 }
                             }
                         }
-                        if(count($row) != 11){
-                            dd($row);
-                        }
+                        // if(count($row) != 11){
+                        //     dd($row);
+                        // }
                         $row['commission'] = 0;
                         if(isset($row['consumption'])){
                             // Commmission calculation
@@ -197,7 +197,6 @@ class BillController extends Controller
                         }
                     }
                 }
-                // dd(count($importData));
                 Bill::upsert($importData,['id'], array_keys($mapping));
             }
             return back()->with('success', 'Data Imported successfully.');

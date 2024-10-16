@@ -121,4 +121,13 @@
             <label class="label label-success">Product</label>
             <canvas id="prod-chart"></canvas>
         </div>
+        <div class="col-sm-4 text-center border bg-white">
+            <label class="label label-success">Status</label>
+            <canvas id="stat-chart"></canvas>
+        </div>
+        <div class="col-sm-4 text-center border bg-white">
+            <label class="label label-success">Scenario</label>
+            <canvas id="src-chart"></canvas>
+        </div>
+    </div>
 </div>

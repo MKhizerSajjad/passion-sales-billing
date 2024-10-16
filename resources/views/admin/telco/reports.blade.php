@@ -86,6 +86,30 @@
                         }]
                     }
                 });
+                var stat_chart = document.getElementById('stat-chart')
+                var statLBL = <?php echo json_encode($chart['stat_lbl']); ?>;
+                var statVAL = <?php echo json_encode($chart['stat_val']); ?>;
+                new Chart(stat_chart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: statLBL,
+                        datasets: [{
+                            data: statVAL,    
+                        }]
+                    }
+                });
+                var src_chart = document.getElementById('src-chart')
+                var srcLBL = <?php echo json_encode($chart['src_lbl']); ?>;
+                var srcVAL = <?php echo json_encode($chart['src_val']); ?>;
+                new Chart(src_chart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: srcLBL,
+                        datasets: [{
+                            data: srcVAL,    
+                        }]
+                    }
+                });
             })
 
             $(document).on('click', '.reset-form', function(event){

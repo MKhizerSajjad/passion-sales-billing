@@ -16,6 +16,36 @@
                     </div>
                     <div class="col-6"></div>
                     <div class="col-12">
+                        <form action="{{route('index')}}" method="get">
+                        <div class="row">
+                            <div class="form-group col-3">
+                                <label for="status">Filter By Energy Agent</label>
+                                <select class="form-control" name="agent" id="agent">
+                                    <option value="">Select Agent</option>
+                                    @foreach ($agentList as $agent)
+                                        <option value="{{$agent}}" {{request('agent') == $agent ? 'selected' : ''}}>{{$agent}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="status">Filter By Telco Supervisor</label>
+                                <select class="form-control" name="supervisor" id="supervisor">
+                                    <option value="">Select Supervisor</option>
+                                    @foreach ($supervisorList as $agent)
+                                        @if ($agent != '')
+                                            <option value="{{$agent}}" {{request('supervisor') == $agent ? 'selected' : ''}}>{{$agent}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-6 pt-4 text-right">
+                                <a href="{{route('index')}}" class="btn btn-warning reset-form">Reset</a>
+                                <button type="submit" class="btn btn-primary reset-form">Submit</button>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="col-12">
                         <div class="row pb-2">
                             <div class="col-sm-8 text-center border px-0">
                                 <div class="graph bg-white px-2">

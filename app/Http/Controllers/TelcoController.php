@@ -41,10 +41,11 @@ class TelcoController extends Controller
             $statusList = $statusList->where('supervisor_firstname', $client);
         }
 
-        $productInfo = $chartInfo = $statusList;
+        $sceInfo = $productInfo = $chartInfo = $statusList;
 
         $statusList = $statusList->get()->groupBy('status');
         $productInfo = $productInfo->get()->groupBy('base_product_name');
+        $sceInfo = $sceInfo->get()->groupBy('scenario');
         
         $statusCount = ['Active' => 0, 'Other' => 0];
         $payment = ['Active' => 0, 'Other' => 0];
@@ -69,10 +70,17 @@ class TelcoController extends Controller
             }
         }
         
-        $productChart = $statusChart = $billChart = [];
+        $scrChart = $statChart = $productChart = $statusChart = $billChart = [];
         foreach ($productInfo as $pk => $pv) {
             $productChart[$pk] = count($pv);
         }
+        foreach ($statusList as $sk => $sv) {
+            $statChart[$sk] = count($sv);
+        }
+        foreach ($sceInfo as $sck => $scv) {
+            $scrChart[$sck] = count($scv);
+        }
+
         
         $chartInfo = $chartInfo->orderBy('registration_date')->get();
         foreach ($chartInfo as $bill) {
@@ -110,6 +118,12 @@ class TelcoController extends Controller
 
         $chart['prod_lbl'] = array_keys($productChart);
         $chart['prod_val'] = array_values($productChart);
+
+        $chart['stat_lbl'] = array_keys($statChart);
+        $chart['stat_val'] = array_values($statChart);
+
+        $chart['src_lbl'] = array_keys($scrChart);
+        $chart['src_val'] = array_values($scrChart);
 
         $agentList = Telco::select('supervisor_firstname')->distinct()->get()->pluck('supervisor_firstname')->toArray();
 
@@ -151,6 +165,10 @@ class TelcoController extends Controller
                                     $record[$v] = date('Y-m-d', strtotime(str_replace('/', '-', $record[$v])));
                                 }
                                 $row[$k] = $record[$v];
+                            }else{
+                                if($v = 'activation_date'){
+                                    $row[$k] = Null;
+                                }
                             }
                         }
                         $row['commission'] = 0;
@@ -181,19 +199,20 @@ class TelcoController extends Controller
                                     break;
                             }
                         }
-                        if(count($row) > 0 && isset($row['order_id'])){
-                            // Setting update bill records
-                            $telcoObj = DB::table('telco')->where('order_id', $row['order_id'])->first();
-                            $row['updated_at'] = Carbon::now();
-                            if($telcoObj){
-                                DB::table('telco')->where('order_id', $row['order_id'])->update($row);
-                            }else{
-                                $row['created_at'] = Carbon::now();
-                                DB::table('telco')->insert($row);
-                            }
+                        $row['created_at'] = date('Y-m-d H:i:s');
+                        $row['updated_at'] = date('Y-m-d H:i:s');
+                        $row['id'] = str_replace("O-", "", $row['order_id']);
+                        $importData[] = $row;
+                        // if(count($row) != 14){
+                        //     dd($row);
+                        // }
+                        if(count($importData) == 100){
+                            Telco::upsert($importData,['id'], array_keys($mapping));
+                            $importData = [];
                         }
                     }
                 }
+                Telco::upsert($importData,['id'], array_keys($mapping));
             }
             return back()->with('success', 'Data Imported successfully.');
         }

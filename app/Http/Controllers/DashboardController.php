@@ -15,13 +15,27 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $dateS = Carbon::now()->startOfMonth()->subMonth(12)->toDateString();
-        $dateE = Carbon::now()->startOfMonth()->addMonth(1)->toDateString(); 
+        $dateE = Carbon::now()->startOfMonth()->addMonth(1)->toDateString();
 
-        $bills = Bill::select('id', 'inscription_date', 'commission', 'status')->whereBetween('inscription_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
+        $agent = (filled($request->agent) && !empty($request->agent)) ? $request->agent : '';
+        $supervisor = (filled($request->supervisor) && !empty($request->supervisor)) ? $request->supervisor : '';
+
+        $bills = Bill::select('id', 'inscription_date', 'commission', 'status')->whereBetween('inscription_date',[$dateS,$dateE]);
+
+        if($agent != ''){
+            $bills = $bills->where('userfield_agent', $agent);
+        }
+        
+        $bills = $bills->get()->groupBy(function ($date) {
             return Carbon::parse($date->inscription_date)->format('m');
         });
 
-        $telco = Telco::select('id', 'registration_date', 'commission', 'status')->whereBetween('registration_date',[$dateS,$dateE])->get()->groupBy(function ($date) {
+        $telco = Telco::select('id', 'registration_date', 'commission', 'status')->whereBetween('registration_date',[$dateS,$dateE]);
+        
+        if($supervisor != ''){
+            $telco = $telco->where('supervisor_firstname', $supervisor);
+        }
+        $telco = $telco->get()->groupBy(function ($date) {
             return Carbon::parse($date->registration_date)->format('m');
         });
 
@@ -92,8 +106,11 @@ class DashboardController extends Controller
         if(count($telcoChart)>0){
             $month['telso_pie'] = ['label' => array_keys($telcoChart), 'values' => array_values($telcoChart)];
         }
+
+        $agentList = Bill::select('userfield_agent')->distinct()->get()->pluck('userfield_agent')->toArray();
+        $supervisorList = Telco::select('supervisor_firstname')->distinct()->get()->pluck('supervisor_firstname')->toArray();
         
-        return view('admin.dashboard', compact('month'));
+        return view('admin.dashboard', compact('month', 'agentList', 'supervisorList'));
 
         if(Auth::user()->user_type != 3) {
 
