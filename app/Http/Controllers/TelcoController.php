@@ -75,7 +75,12 @@ class TelcoController extends Controller
             $productChart[$pk] = count($pv);
         }
         foreach ($statusList as $sk => $sv) {
-            $statChart[$sk] = count($sv);
+            if($sk == 'ACTIVATED'){
+                $statChart[$sk] = count($sv);
+            }else{
+                $statChart['OTHERS'] = count($sv);
+            }
+            
         }
         foreach ($sceInfo as $sck => $scv) {
             $scrChart[$sck] = count($scv);

@@ -3,7 +3,7 @@
         <div class="content-page rtl-page">
             <div class="container-fluid">
                 @include('admin.helper.alert_success')
-                <h2 class="mb-2">Telco Reports</h2>
+                <h2 class="mb-2">Contrats Telco Reports</h2>
                 <div class="row">
                     @include('admin.telco.charts.graph')
                 </div>

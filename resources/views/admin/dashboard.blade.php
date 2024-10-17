@@ -3,7 +3,7 @@
         <div class="content-page rtl-page">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-sm-12 col-lg">
                         <div class="page-title-box mb-4">
                             <div class="page-title-right">
                                 @if (Auth::user()->user_type != 3 && 2 == 1)
@@ -14,11 +14,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6"></div>
+                    <div class="col-sm-12 col-lg"></div>
                     <div class="col-12">
                         <form action="{{route('index')}}" method="get">
                         <div class="row">
-                            <div class="form-group col-3">
+                            <div class="form-group col-sm-12 col-md-6 col-lg">
                                 <label for="status">Filter By Energy Agent</label>
                                 <select class="form-control" name="agent" id="agent">
                                     <option value="">Select Agent</option>
@@ -27,7 +27,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-3">
+                            <div class="form-group col-md-6 col-lg">
                                 <label for="status">Filter By Telco Supervisor</label>
                                 <select class="form-control" name="supervisor" id="supervisor">
                                     <option value="">Select Supervisor</option>
@@ -38,7 +38,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-6 pt-4 text-right">
+                            <div class="form-group col-md-6 col-lg pt-4 text-right">
                                 <a href="{{route('index')}}" class="btn btn-warning reset-form">Reset</a>
                                 <button type="submit" class="btn btn-primary reset-form">Submit</button>
                             </div>
@@ -55,7 +55,7 @@
                             </div>
                             <div class="col-sm-4 text-center border px-0">
                                 <div class="graph bg-white px-2">
-                                    <label class="label label-success">Energy Current Month</label>
+                                    <label class="label label-success">Energy This Month Records</label>
                                     <canvas id="eng-month-chart"></canvas>
                                 </div>
                             </div>
@@ -69,7 +69,7 @@
                             </div>
                             <div class="col-sm-4 text-center border px-0">
                                 <div class="graph bg-white px-2">
-                                    <label class="label label-success">Telco Current Month</label>
+                                    <label class="label label-success">Telco This Month Records</label>
                                     <canvas id="tel-month-chart"></canvas>
                                 </div>
                             </div>

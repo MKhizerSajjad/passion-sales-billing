@@ -3,7 +3,7 @@
         <div class="content-page rtl-page">
             <div class="container-fluid">
                 @include('admin.helper.alert_success')
-                <h3 class="mb-2">Telco Bill Listing</h3>
+                <h3 class="mb-2">Contrats Telco Listing</h3>
                 <div class="row">
                     <div class="col-lg-12 mb-3">
                         <a href="{{route('importTelcoBills')}}" class="btn btn-primary btn-rounded waves-effect waves-light float-right mt-2">Import TELCO Contract</a>

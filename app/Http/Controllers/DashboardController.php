@@ -98,14 +98,21 @@ class DashboardController extends Controller
         $telcoChart = [];
         $telco = Telco::select('status')->whereRaw('MONTH(registration_date) = ?' ,[$currMonth]) ->whereRaw('YEAR(registration_date) = ?' ,[date('Y')])->get()->groupBy('status');
 
+        $month['telso_pie'] = ['label' => ['Paid', 'Un-Paid'], 'values' => ['0'=>0, '1'=>0]];
         foreach ($telco as $telKey => $val) {
-            $telcoChart[$telKey] = count($val);
+            if($telKey == 'ACTIVATED'){
+                $month['telso_pie']['values'][0] += count($val); 
+            }else{
+                $month['telso_pie']['values'][1] += count($val);
+            }
+            
+            // $telcoChart[$telKey] = count($val);
         }
 
-        $month['telso_pie'] = ['label' => [], 'values' => []];
-        if(count($telcoChart)>0){
-            $month['telso_pie'] = ['label' => array_keys($telcoChart), 'values' => array_values($telcoChart)];
-        }
+        // if(count($telcoChart)>0){
+        //     $month['telso_pie'] = ['label' => array_keys($telcoChart), 'values' => array_values($telcoChart)];
+        // }
+        // dd($month);
 
         $agentList = Bill::select('userfield_agent')->distinct()->get()->pluck('userfield_agent')->toArray();
         $supervisorList = Telco::select('supervisor_firstname')->distinct()->get()->pluck('supervisor_firstname')->toArray();
