@@ -135,7 +135,6 @@ class BillController extends Controller
                 'consumption' => 'Consommation',
                 'contract_type' => 'contract_type',
                 'product_type' => 'Type de paiement',
-
             ];
             if(isset($data[0]) && isset($data[0][1])){
                 // unset($data[0][0]);
@@ -145,16 +144,28 @@ class BillController extends Controller
                     if($key > 0){
                         $record = array_combine($header, $value);
                         $row = [];
-                        if($record['EAN'] == null){
-                            continue;
-                        }
+                        // if($record['EAN'] == null){
+                        //     continue;
+                        // }
                         foreach($mapping as $k => $v){
                             if(isset($record[$v])){
                                 if ($v == 'DateInscription'){
                                     $UNIX_DATE = ($record[$v] - 25569) * 86400;
                                     $row[$k] = gmdate("Y-m-d H:i:s", $UNIX_DATE);
                                 }else{
-                                    $row[$k] = trim($record[$v], "'");
+                                    if($v == 'EAN'){
+                                        $number = '000';
+                                        if($value[7] == 'Elec'){
+                                            $number = '001';
+                                        }else if($value[7] == 'Gaz'){
+                                            $number = '002';
+                                        }
+                                        $uniqueID = $value[1].$number;
+                                        $row[$k] = $uniqueID;
+                                    }else{
+                                        $row[$k] = trim($record[$v], "'");
+                                    }
+                                    // $row[$k] = trim($record[$v], "'");
                                 }
                             }else{
                                 if($v == "Agent"){
@@ -191,13 +202,15 @@ class BillController extends Controller
                         $row['updated_at'] = date('Y-m-d H:i:s');
                         $row['id'] = $row['bill_id'];
                         $importData[] = $row;
-                        if(count($importData) == 100){
+                        if(count($importData) == 1000){
                             Bill::upsert($importData,['id'], array_keys($mapping));
                             $importData = [];
                         }
                     }
                 }
-                Bill::upsert($importData,['id'], array_keys($mapping));
+                if(count($importData) > 0){
+                    Bill::upsert($importData,['id'], array_keys($mapping));
+                }
             }
             return back()->with('success', 'Data Imported successfully.');
         }
