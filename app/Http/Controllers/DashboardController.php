@@ -25,18 +25,18 @@ class DashboardController extends Controller
         if($agent != ''){
             $bills = $bills->where('userfield_agent', $agent);
         }
-        
+
         $bills = $bills->get()->groupBy(function ($date) {
-            return Carbon::parse($date->inscription_date)->format('m');
+            return Carbon::parse($date->inscription_date)->format('Ym');
         });
 
         $telco = Telco::select('id', 'registration_date', 'commission', 'status')->whereBetween('registration_date',[$dateS,$dateE]);
-        
+
         if($supervisor != ''){
             $telco = $telco->where('supervisor_firstname', $supervisor);
         }
         $telco = $telco->get()->groupBy(function ($date) {
-            return Carbon::parse($date->registration_date)->format('m');
+            return Carbon::parse($date->registration_date)->format('Ym');
         });
 
         $chart = [];
@@ -47,7 +47,7 @@ class DashboardController extends Controller
             });
 
             $comm = array_sum($filtered->pluck('commission')->toArray());
-            
+
             $chart[$key] = ['bills' => count($value), 'telco' => 0, 'com_b' => $comm, 'com_t' => 0];
         }
         foreach ($telco as $key => $value) {
@@ -57,7 +57,7 @@ class DashboardController extends Controller
             });
 
             $comm = array_sum($filtered->pluck('commission')->toArray());
-            
+
             if(in_array($key, array_keys($chart))){
                 $chart[$key] = ['bills' => $chart[$key]['bills'], 'telco' => count($value), 'com_b' => $chart[$key]['com_b'], 'com_t' => $comm];
             }else{
@@ -66,10 +66,13 @@ class DashboardController extends Controller
         }
         ksort($chart);
         $month['labels'] = array_keys($chart);
+        $month['labels'] = array_map(function($item) {
+            return (int)substr($item, 4); // Remove year from keys
+        }, $month['labels']);
         if(is_array($month['labels']) && count($month['labels'])>0){
             $month['labels'] = array_values(array_reduce($month['labels'],function($rslt,$m){ $rslt[$m] = date('F',mktime(0,0,0,$m,10)); return $rslt; }));
         }
-        
+
         $month['energy'] = array_column($chart, 'bills');
         $month['telco'] = array_column($chart, 'telco');
         $month['com_b'] = array_column($chart, 'com_b');
@@ -101,11 +104,11 @@ class DashboardController extends Controller
         $month['telso_pie'] = ['label' => ['Paid', 'Un-Paid'], 'values' => ['0'=>0, '1'=>0]];
         foreach ($telco as $telKey => $val) {
             if($telKey == 'ACTIVATED'){
-                $month['telso_pie']['values'][0] += count($val); 
+                $month['telso_pie']['values'][0] += count($val);
             }else{
                 $month['telso_pie']['values'][1] += count($val);
             }
-            
+
             // $telcoChart[$telKey] = count($val);
         }
 
@@ -116,7 +119,7 @@ class DashboardController extends Controller
 
         $agentList = Bill::select('userfield_agent')->distinct()->get()->pluck('userfield_agent')->toArray();
         $supervisorList = Telco::select('supervisor_firstname')->distinct()->get()->pluck('supervisor_firstname')->toArray();
-        
+
         return view('admin.dashboard', compact('month', 'agentList', 'supervisorList'));
 
         if(Auth::user()->user_type != 3) {
